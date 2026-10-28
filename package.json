@@ -1,0 +1,6 @@
+{
+  "name": "nox-skill",
+  "private": true,
+  "description": "Skill di Claude Code che fa passare ogni chiamata API da Nox",
+  "scripts": { "test": "node --test test/skill.test.js" }
+}
