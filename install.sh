@@ -56,4 +56,4 @@ python3 "$SETTINGS_PY" "$CLAUDE_DIR" "$HOOK" "$SKILL_DIR/claude-md.md" "$UPDATE_
 echo
 if [ "$AUTO_UPDATE" = 1 ]; then echo "Aggiornamento automatico attivo: all'avvio di ogni chat la skill si allinea a $BASE."; fi
 echo "Fatto. Le chat già aperte non cambiano: apri una nuova chat di Claude Code."
-echo "Ogni chat dovrà farsi approvare in Nox (scheda Modifiche) prima di usare le API."
+echo "Ogni chat dovrà farsi approvare in Nox (scheda Approvazioni) prima di usare le API."

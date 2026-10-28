@@ -43,4 +43,4 @@ if ($LASTEXITCODE -ne 0) { Write-Error "Non sono riuscito ad aggiornare le impos
 
 if ($Auto -eq "1") { Write-Host "Aggiornamento automatico attivo: all'avvio di ogni chat la skill si allinea a $Base." }
 Write-Host "Fatto. Le chat già aperte non cambiano: apri una nuova chat di Claude Code."
-Write-Host "Ogni chat dovrà farsi approvare in Nox (scheda Modifiche) prima di usare le API."
+Write-Host "Ogni chat dovrà farsi approvare in Nox (scheda Approvazioni) prima di usare le API."

@@ -26,7 +26,7 @@ L'hook installato con la skill blocca solo `curl`, `wget` e `gh api` verso host 
 Gli strumenti di Nox compaiono come `mcp__nox__…` (se non sono caricati, cerca "nox" con ToolSearch).
 
 1. **Accesso, una volta per chat**: `request_access` con una `label` breve (es. «Inventario server di agosto»). Restituisce un `chatId`.
-2. **Di' all'utente di approvare** nell'app Nox (scheda Modifiche, sceglie 1, 8 o 24 ore), poi segui «Attesa dell'approvazione». Se è `denied`, `revoked` o `expired`, fermati: la richiesta decade dopo 10 minuti e si rifà con un nuovo `request_access`.
+2. **Di' all'utente di approvare** nell'app Nox (scheda Approvazioni, sceglie 1, 8 o 24 ore), poi segui «Attesa dell'approvazione». Se è `denied`, `revoked` o `expired`, fermati: la richiesta decade dopo 10 minuti e si rifà con un nuovo `request_access`.
 3. **Passa il `chatId` a ogni strumento.** Non riusare quello di un'altra chat e non cercarlo nei file.
 4. **Servizi**: `list_services`; usa solo quelli.
 5. **Leggere**: `read` con `serviceId`, `method`, `path`, `query`, `body`. Nox registra ogni lettura.
