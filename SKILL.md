@@ -1,6 +1,6 @@
 ---
 name: nox-api-approval
-description: Regola di sicurezza. Usala ogni volta che stai per fare, o che l'utente chiede, una chiamata API verso un servizio esterno (REST, GraphQL, Microsoft 365, NinjaOne, GLPI, Proxmox, Gmail, ecc.): con curl, fetch, wget, httpie, script Python/Node, SDK, o leggendo chiavi/token da .env o dalle cartelle delle credenziali. Ogni chiamata API deve passare dall'applicazione Nox dell'utente (strumenti MCP del connettore nox: list_services, read, propose_write, list_proposals). Ogni chat deve prima farsi approvare con `request_access` nell'app Nox; poi le letture passano da `read`, mentre ogni modifica (POST/PUT/PATCH/DELETE) passa da `propose_write`: finché l'accesso della chat è attivo Nox esegue da solo le modifiche non distruttive, mentre le distruttive (cancellazioni, spegnimenti, azzeramenti, revoche) sono proposte che l'utente approva nell'app, una per una. Non chiamare mai direttamente un'API e non usare mai credenziali prese dai file.
+description: Regola di sicurezza. Usala ogni volta che stai per fare, o che l'utente chiede, una chiamata API verso un servizio esterno (REST, GraphQL, Microsoft 365, NinjaOne, GLPI, Proxmox, Gmail, ecc.): con curl, fetch, wget, httpie, script Python/Node, SDK, o leggendo chiavi/token da .env o dalle cartelle delle credenziali. Ogni chiamata API deve passare dall'applicazione Nox dell'utente (strumenti MCP del connettore nox: list_services, read, propose_write, list_proposals). Ogni chat deve prima farsi approvare con `request_access` nell'app Nox; poi le letture passano da `read`, mentre ogni modifica (POST/PUT/PATCH/DELETE) passa da `propose_write`: finché l'accesso della chat è attivo Nox esegue da solo le modifiche non distruttive, mentre le distruttive (cancellazioni, spegnimenti, azzeramenti, revoche) sono proposte che l'utente approva nell'app, una per una. Non chiamare mai direttamente un'API e non usare mai credenziali prese dai file. Vale anche per computer e server: se sono collegati a Nox (pc_list) si lavora con gli strumenti pc_* (autonomia completa quando l'utente li ha sbloccati), altrimenti con il metodo solito.
 ---
 
 # Chiamate API: sempre tramite Nox
@@ -62,6 +62,20 @@ Corpo:    {"campo": "valore"}
 3. **Invia**; per le modifiche conferma con **Esegui**. Il codice HTTP in alto alla risposta dice l'esito (200/204 = fatto).
 
 «Not found» di solito è il percorso (prefisso ripetuto o `/` finale mancante): prova prima con `GET`. Se manca il pulsante, al suo ruolo serve il permesso `explore.write`. Quando ha eseguito, rileggi con `read` e conferma. Non rifare mai tu la stessa modifica per un'altra via.
+
+## Computer e server: prima Nox, poi il metodo solito
+
+Prima di fare **qualunque cosa su un computer o un server** (comandi, installazioni, registri, file di configurazione), guarda se è collegato a Nox con `pc_list` (serve il `chatId` approvato).
+
+- **È nella lista** (tuo o condiviso con te): lavora **solo** con gli strumenti `pc_*` di Nox, mai con `ssh`, `scp` o chiavi lette dal disco. `pc_run` vuole l'elenco degli argomenti (niente shell: niente pipe, `&&`, `$()`), il sottocomando subito dopo il comando e `sudo: true` invece di scrivere `sudo`. Per pipe e più passaggi `pc_propose_script`; per scrivere un file `pc_write_file` (Nox tiene una copia del precedente). Scrivi sempre `description`: una frase in italiano, senza codice.
+- **Non è nella lista**: usa il metodo solito (per esempio `ssh` con la configurazione dell'utente). Se pensi che dovrebbe esserci, diglielo: lo collega lui dalla pagina *Computer* di Nox (Linux e Mac).
+
+**Sbloccato o bloccato.** `pc_list` dice se il computer è **sbloccato** (`sudoWindow.open`, fino a quando):
+- **Sbloccato**: l'utente ti ha dato fiducia per quel tempo. **Lavora in autonomia**: ogni comando parte da solo, `sudo` compreso, senza approvazioni. Chiedono comunque conferma solo pochi comandi distruttivi (formattare o sovrascrivere dischi, cancellare cartelle di sistema, spegnere o riavviare, firewall o SSH che potrebbero tagliare fuori l'accesso, l'agente di Nox, `sudoers`, gli account): se la risposta dice `needsApproval` con «anche a computer sbloccato», riferisci il motivo e aspetta. Non usarlo come scusa per fare più del richiesto.
+- **Bloccato**: le letture sicure partono da sole; ogni modifica diventa una proposta da approvare. Se ti serve lavorare in autonomia, **chiedi all'utente di sbloccare il computer** dalla pagina *Computer* (sceglie la durata: da 15 minuti a 8 ore). Non puoi sbloccarlo tu.
+- Su un computer **condiviso** il livello conta: «solo lettura» = solo letture; «lettura e proposte» = le modifiche le approva il proprietario; «pieno» = come se fosse tuo, ma sbloccato vale solo se l'ha sbloccato chi usa questa chat.
+
+Comandi lunghi possono rispondere `running`: controlla con `pc_result`, non rilanciarli. Se Claude risulta fermato (`autoPaused`: troppi comandi o errori di fila), fermati e spiega. Mai riproporre in un'altra forma un comando rifiutato o da approvare.
 
 ## Se Nox non è raggiungibile
 
